@@ -1,6 +1,12 @@
 # OSS
 These scripts are based on LFS and BLFS. There are changes in CFLAGS and some packages according to my need. These do not contain any tests.
 
+## How are these scrips different than others?
+The most magical part is versions. I have taken the version from the file name itself. So that whenever I update the packages I don't have to update the version number in the script as well. All I gotta do is change the version number in the download link and I am good to go. Consider the changelog for LFS and BLFS. They mention the updates in different way and in book process changes in different way. That way if there are changes in the process then I can update the script or esle I just
+have to change the version number once in the downlond links page.
+
+One small thing is that I just have to run the script all other configuration and every small nook and cranny is handled by the script. Network configuration and getting my application config from git repository and adding them to my home. Basically everything.
+
 ## BLFS Applications
 Basically the quest was to build the firefox from the source. So each and every application was decided according to that. Most X Libraries are compiled. But they will not be in use because of Wayland. The final build will work on Wayland with Sway. I wont be including each and every package that has been compiled in the script but the top ones being:
 
