@@ -41,7 +41,7 @@ https://www.freedesktop.org/software/polkit/releases/polkit-0.119.tar.gz
 https://www.linuxfromscratch.org/patches/blfs/11.0/polkit-0.119-fix_elogind_detection-1.patch
 https://download.gnome.org/sources/glib/2.68/glib-2.68.4.tar.xz
 https://www.linuxfromscratch.org/patches/blfs/11.0/glib-2.68.4-skip_warnings-1.patch
-https://ftp.pcre.org/pub/pcre/pcre-8.45.tar.bz2
+https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.bz2
 https://download.gnome.org/sources/gobject-introspection/1.68/gobject-introspection-1.68.0.tar.xz
 https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/2.1/shared-mime-info-2.1.tar.gz
 https://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.26.tar.xz
@@ -79,8 +79,8 @@ https://files.pythonhosted.org/packages/source/M/Mako/Mako-1.1.5.tar.gz
 https://dri.freedesktop.org/libdrm/libdrm-2.4.107.tar.xz
 https://wayland.freedesktop.org/releases/wayland-protocols-1.23.tar.xz
 https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz
-https://github.com/intel/libva/releases/download/2.12.0/libva-2.12.0.tar.bz2
-https://mesa.freedesktop.org/archive/mesa-21.2.1.tar.xz
+https://github.com/intel/libva/releases/download/2.13.0/libva-2.13.0.tar.bz2
+https://mesa.freedesktop.org/archive/mesa-21.3.1.tar.xz
 https://download.gnome.org/sources/at-spi2-core/2.40/at-spi2-core-2.40.3.tar.xz
 https://download.gnome.org/sources/at-spi2-atk/2.38/at-spi2-atk-2.38.0.tar.xz
 https://github.com/anholt/libepoxy/releases/download/1.5.9/libepoxy-1.5.9.tar.xz
@@ -103,8 +103,6 @@ https://www.alsa-project.org/files/pub/lib/alsa-lib-1.2.5.1.tar.bz2
 https://www.alsa-project.org/files/pub/plugins/alsa-plugins-1.2.5.tar.bz2
 https://www.alsa-project.org/files/pub/utils/alsa-utils-1.2.5.1.tar.bz2
 https://www.freedesktop.org/software/pulseaudio/releases/pulseaudio-15.0.tar.xz
-https://github.com/libfuse/libfuse/releases/download/fuse-3.10.4/fuse-3.10.4.tar.xz
-https://github.com/libfuse/sshfs/releases/download/sshfs-3.7.2/sshfs-3.7.2.tar.xz
 https://github.com/libass/libass/releases/download/0.15.1/libass-0.15.1.tar.xz
 https://downloads.sourceforge.net/opencore-amr/fdk-aac-2.0.2.tar.gz
 https://downloads.sourceforge.net/lame/lame-3.100.tar.gz
@@ -138,3 +136,9 @@ https://xcb.freedesktop.org/dist/xcb-util-0.4.0.tar.bz2
 https://www.freedesktop.org/software/libinput/libinput-1.19.0.tar.xz
 https://s3.amazonaws.com/json-c_releases/releases/json-c-0.15.tar.gz
 https://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz
+https://github.com/libfuse/libfuse/releases/download/fuse-3.10.4/fuse-3.10.4.tar.xz
+https://github.com/libfuse/sshfs/releases/download/sshfs-3.7.2/sshfs-3.7.2.tar.xz
+https://github.com/swaywm/sway/releases/download/1.6.1/sway-1.6.1.tar.gz
+https://gitlab.freedesktop.org/wlroots/wlroots/-/archive/0.14.1/wlroots-0.14.1.tar.gz
+https://git.sr.ht/~kennylevinsen/seatd/archive/0.6.3.tar.gz
+https://bitbucket.org/mutt/mutt/downloads/mutt-2.1.2.tar.gz

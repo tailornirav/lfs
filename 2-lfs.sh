@@ -8,7 +8,7 @@ export CFLAGS="-march=native -O3 -pipe"
 export CXXFLAGS=${CFLAGS}
 
 # Creating remaining directories
-mkdir -pv /{boot,home,mnt,opt,srv}
+mkdir -pv /{boot,home,opt}
 mkdir -pv /etc/{opt,sysconfig}
 mkdir -pv /lib/firmware
 mkdir -pv /usr/{,local/}{include,src}
@@ -68,11 +68,6 @@ wheel:x:97:
 nogroup:x:99:
 users:x:999:
 EOF
-## Log files
-touch /var/log/{btmp,lastlog,faillog,wtmp}
-chgrp -v utmp /var/log/lastlog
-chmod -v 664  /var/log/lastlog
-chmod -v 600  /var/log/btmp
 
 # Libstdc++
 unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /sources/gcc*/)
@@ -452,12 +447,13 @@ unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /sources/acl*/)
 make -C /sources/${LFS_PKG_DIR}
 make -C /sources/${LFS_PKG_DIR} install
 
-# Lipcap
+# Libcap
 unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /sources/libcap*/)
+unset LFS_PKG_DIR_VER && export LFS_PKG_DIR_VER=$(basename -- /sources/libcap*/ | cut -f2 -d'-' | cut -f1-2 -d'.')
 sed -i '/install -m.*STA/d' /sources/${LFS_PKG_DIR}/libcap/Makefile
 make -C /sources/${LFS_PKG_DIR} prefix=/usr lib=lib
 make -C /sources/${LFS_PKG_DIR} prefix=/usr lib=lib install
-chmod -v 755 /usr/lib/lib{cap,psx}.so.2.53
+chmod -v 755 /usr/lib/lib{cap,psx}.so.${LFS_PKG_DIR_VER}
 
 # Shadow
 unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /sources/shadow*/)
@@ -1049,24 +1045,6 @@ unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /sources/util-linux*/)
 make -C /sources/${LFS_PKG_DIR}
 make -C /sources/${LFS_PKG_DIR} install
 
-# Sysklogd
-unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /sources/sysklogd*/)
-sed -i '/Error loading kernel symbols/{n;n;d}' /sources/${LFS_PKG_DIR}/ksym_mod.c
-sed -i 's/union wait/int/' /sources/${LFS_PKG_DIR}/syslogd.c
-make -C /sources/${LFS_PKG_DIR}
-make -C /sources/${LFS_PKG_DIR} BINDIR=/sbin install
-cat > /etc/syslog.conf << "EOF"
-# Begin /etc/syslog.conf
-auth,authpriv.* -/var/log/auth.log
-*.*;auth,authpriv.none -/var/log/sys.log
-daemon.* -/var/log/daemon.log
-kern.* -/var/log/kern.log
-mail.* -/var/log/mail.log
-user.* -/var/log/user.log
-*.emerg *
-# End /etc/syslog.conf
-EOF
-
 # Sysvinit
 unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /sources/sysvinit*/)
 patch -d /sources/${LFS_PKG_DIR} -Np1 -i ../${LFS_PKG_DIR}-consolidated-1.patch
@@ -1142,17 +1120,18 @@ BROADCAST=192.168.1.255
 EOF
 cat > /etc/resolv.conf << "EOF"
 # Begin /etc/resolv.conf
-domain quietness.xyz
-nameserver 208.67.222.222
-nameserver 208.67.220.220
+
+nameserver 1.1.1.1
+nameserver 1.0.0.1
+
 # End /etc/resolv.conf
 EOF
 echo "quiet" > /etc/hostname
 cat > /etc/hosts << "EOF"
 # Begin /etc/hosts
 127.0.0.1     localhost.localdomain localhost
-127.0.1.1     quiet.quietness.xyz quiet
-192.168.1.100 quiet.quietness.xyz quiet
+127.0.1.1     quiet.localdomain quiet
+192.168.1.100 quiet.localdomain quiet
 # End /etc/hosts
 EOF
 
@@ -1219,7 +1198,6 @@ CLOCKPARAMS=
 LOGLEVEL=1
 HOSTNAME=quiet
 KILLDELAY=1
-SYSKLOGD_PARMS="-m 0"
 KEYMAP="dvorak-programmer"
 FONT="lat1-16 -m 8859-1"
 UNICODE=1

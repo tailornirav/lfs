@@ -252,19 +252,15 @@ unset RED GREEN NORMAL
 # End /etc/bashrc
 EOF
 
-## Bash Profile
-cat > ~/.bash_profile << "EOF"
-# Begin ~/.bash_profile
+## Environment
+cat > /etc/environment << "EOF"
+# Begin /etc/environment
 
-if [ -f "$HOME/.bashrc" ] ; then
-  source $HOME/.bashrc
-fi
+MOZ_WEBRENDER=1
+MOZ_ENABLE_WAYLAND=1
+EDITOR=nvim
 
-if [ -d "$HOME/bin" ] ; then
-  pathprepend $HOME/bin
-fi
-
-# End ~/.bash_profile
+# End /etc/environment
 EOF
 
 ## Dircolors
@@ -540,6 +536,12 @@ EOF
 
 # Shadow
 unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/shadow*/)
+sed -i.orig '/$(LIBTCB)/i $(LIBPAM) \\' /blfs/${LFS_PKG_DIR}/libsubid/Makefile.am
+sed -i "224s/rounds/min_rounds/" /blfs/${LFS_PKG_DIR}/libmisc/salt.c
+(
+  cd /blfs/${LFS_PKG_DIR}
+  autoreconf -fiv
+)
 sed -i 's/groups$(EXEEXT) //' /blfs/${LFS_PKG_DIR}/src/Makefile.in
 find /blfs/${LFS_PKG_DIR}/man -name Makefile.in -exec sed -i 's/groups\.1 / /'   {} \;
 find /blfs/${LFS_PKG_DIR}/man -name Makefile.in -exec sed -i 's/getspnam\.3 / /' {} \;
@@ -548,11 +550,8 @@ sed -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' \
   -e 's@/var/spool/mail@/var/mail@'                   \
   -e '/PATH=/{s@/sbin:@@;s@/bin:@@}'                  \
   -i /blfs/${LFS_PKG_DIR}/etc/login.defs
-sed -i.orig '/$(LIBTCB)/i $(LIBPAM) \\' /blfs/${LFS_PKG_DIR}/libsubid/Makefile.am
-sed -i "224s/rounds/min_rounds/" /blfs/${LFS_PKG_DIR}/libmisc/salt.c
 (
   cd /blfs/${LFS_PKG_DIR}
-  autoreconf -fiv
   ./configure --sysconfdir=/etc --with-group-name-max-length=32
 )
 make -C /blfs/${LFS_PKG_DIR}
@@ -1212,41 +1211,6 @@ make -C /blfs/${LFS_PKG_DIR}
 make -C /blfs/${LFS_PKG_DIR} install
 
 # Xorg Libs
-cat > /blfs/lib-7.md5 << "EOF"
-ce2fb8100c6647ee81451ebe388b17ad  xtrans-1.4.0.tar.bz2
-a9a24be62503d5e34df6b28204956a7b  libX11-1.7.2.tar.bz2
-f5b48bb76ba327cd2a8dc7a383532a95  libXext-1.3.4.tar.bz2
-4e1196275aa743d6ebd3d3d5ec1dff9c  libFS-1.0.8.tar.bz2
-76d77499ee7120a56566891ca2c0dbcf  libICE-1.0.10.tar.bz2
-87c7fad1c1813517979184c8ccd76628  libSM-1.2.3.tar.bz2
-b122ff9a7ec70c94dbbfd814899fffa5  libXt-1.2.1.tar.bz2
-ac774cff8b493f566088a255dbf91201  libXmu-1.1.3.tar.bz2
-6f0ecf8d103d528cfc803aa475137afa  libXpm-3.5.13.tar.bz2
-c1ce21c296bbf3da3e30cf651649563e  libXaw-1.0.14.tar.bz2
-86f182f487f4f54684ef6b142096bb0f  libXfixes-6.0.0.tar.bz2
-3fa0841ea89024719b20cd702a9b54e0  libXcomposite-0.4.5.tar.bz2
-802179a76bded0b658f4e9ec5e1830a4  libXrender-0.9.10.tar.bz2
-9b9be0e289130fb820aedf67705fc549  libXcursor-1.2.0.tar.bz2
-e3f554267a7a04b042dc1f6352bd6d99  libXdamage-1.1.5.tar.bz2
-6447db6a689fb530c218f0f8328c3abc  libfontenc-1.1.4.tar.bz2
-bdf528f1d337603c7431043824408668  libXfont2-2.0.5.tar.bz2
-5004d8e21cdddfe53266b7293c1dfb1b  libXft-2.3.4.tar.bz2
-62c4af0839072024b4b1c8cbe84216c7  libXi-1.7.10.tar.bz2
-0d5f826a197dae74da67af4a9ef35885  libXinerama-1.1.4.tar.bz2
-18f3b20d522f45e4dadd34afb5bea048  libXrandr-1.5.2.tar.bz2
-e142ef0ed0366ae89c771c27cfc2ccd1  libXres-1.2.1.tar.bz2
-ef8c2c1d16a00bd95b9fdcef63b8a2ca  libXtst-1.2.3.tar.bz2
-210b6ef30dda2256d54763136faa37b9  libXv-1.0.11.tar.bz2
-3569ff7f3e26864d986d6a21147eaa58  libXvMC-1.0.12.tar.bz2
-0ddeafc13b33086357cfa96fae41ee8e  libXxf86dga-1.1.5.tar.bz2
-298b8fff82df17304dfdb5fe4066fe3a  libXxf86vm-1.1.4.tar.bz2
-d2f1f0ec68ac3932dd7f1d9aa0a7a11c  libdmx-1.1.4.tar.bz2
-b34e2cbdd6aa8f9cc3fa613fd401a6d6  libpciaccess-0.16.tar.bz2
-dd7e1e946def674e78c0efbc5c7d5b3b  libxkbfile-1.1.0.tar.bz2
-42dda8016943dc12aff2c03a036e0937  libxshmfence-1.3.tar.bz2
-EOF
-mkdir -pv /blfs/lib
-grep -v '^#' /blfs/lib-7.md5 | awk '{print $2}' | wget -i- -c -B https://www.x.org/pub/individual/lib/ -P /blfs/lib
 for package in $(grep -v '^#' /blfs/lib-7.md5 | awk '{print $2}'); do
   packagedir=${package%.tar.bz2}
   tar -xf /blfs/lib/$package -C /blfs/lib
@@ -1676,10 +1640,8 @@ mkdir -pv /blfs/${LFS_PKG_DIR}/build
   --buildtype=release         \
   -Ddri-drivers=[]            \
   -Dgallium-drivers=radeonsi  \
-  -Dgallium-va=enabled        \
   -Dvulkan-drivers=amd        \
-  -Dllvm=enabled              \
-  -Dplatforms=wayland         \
+  -Dplatforms=x11,wayland     \
   -Dgallium-nine=false        \
   -Dvalgrind=false            \
   -Dlibunwind=disabled ..
@@ -1794,19 +1756,17 @@ unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/gtk+-3*/)
   ./configure --prefix=/usr  \
   --sysconfdir=/etc          \
   --enable-broadway-backend  \
-  --disable-x11-backend       \
+  --enable-x11-backend       \
   --enable-wayland-backend
 )
 make -C /blfs/${LFS_PKG_DIR}
 make -C /blfs/${LFS_PKG_DIR} install
 
 # Fonts
-cp -rv /blfs/lfs/static/firacode /usr/share/fonts/
+cp -rv /blfs/lfs/static/plex /usr/share/fonts/
 
 # Seatd
-mkdir /blfs/seatd
-git clone https://git.sr.ht/~kennylevinsen/seatd /blfs/seatd
-unset LFS_PKG_DIR && export LFS_PKG_DIR=seatd
+unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/seatd*/)
 mkdir -pv /blfs/${LFS_PKG_DIR}/build
 (
   cd /blfs/${LFS_PKG_DIR}/build
@@ -1860,21 +1820,29 @@ make -C /blfs/${LFS_PKG_DIR}/build
 make -C /blfs/${LFS_PKG_DIR}/build install
 
 # wlroots
-mkdir /blfs/wlroots
-git clone https://github.com/swaywm/wlroots.git /blfs/wlroots
-unset LFS_PKG_DIR && export LFS_PKG_DIR=wlroots
+unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/wlroots*/)
 mkdir -pv /blfs/${LFS_PKG_DIR}/build
 (
   cd /blfs/${LFS_PKG_DIR}/build
-  meson --prefix=/usr --buildtype=release
+  meson --prefix=/usr
 )
 ninja -C /blfs/${LFS_PKG_DIR}/build
 ninja -C /blfs/${LFS_PKG_DIR}/build install
 
 # sway
-mkdir /blfs/sway
-git clone https://github.com/swaywm/sway.git /blfs/sway
-unset LFS_PKG_DIR && export LFS_PKG_DIR=sway
+unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/sway*/)
+mkdir -pv /blfs/${LFS_PKG_DIR}/build
+(
+  cd /blfs/${LFS_PKG_DIR}/build
+  meson --prefix=/usr
+)
+ninja -C /blfs/${LFS_PKG_DIR}/build
+ninja -C /blfs/${LFS_PKG_DIR}/build install
+
+# wl-clipboard
+mkdir /blfs/wl-clipboard
+git clone https://gitlab.freedesktop.org/wayland/wl-clipboard.git /blfs/wl-clipboard
+unset LFS_PKG_DIR && export LFS_PKG_DIR=wl-clipboard
 mkdir -pv /blfs/${LFS_PKG_DIR}/build
 (
   cd /blfs/${LFS_PKG_DIR}/build
@@ -2098,31 +2066,6 @@ ninja -C /blfs/${LFS_PKG_DIR}/build
 ninja -C /blfs/${LFS_PKG_DIR}/build install
 rm -fv /etc/dbus-1/system.d/pulseaudio-system.conf
 
-# Fuse
-unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/fuse*/)
-sed -i '/^udev/,$ s/^/#/' /blfs/${LFS_PKG_DIR}/util/meson.build
-mkdir -pv /blfs/${LFS_PKG_DIR}/build
-(
-  cd /blfs/${LFS_PKG_DIR}/build
-  meson --prefix=/usr --buildtype=release ..
-)
-ninja -C /blfs/${LFS_PKG_DIR}/build
-ninja -C /blfs/${LFS_PKG_DIR}/build install
-chmod u+s /usr/bin/fusermount3
-install -v -m755 -d /usr/share/doc/${LFS_PKG_DIR}
-install -v -m644 /blfs/${LFS_PKG_DIR}/doc/{README.NFS,kernel.txt} /usr/share/doc/${LFS_PKG_DIR}
-cp -Rv /blfs/${LFS_PKG_DIR}/doc/html /usr/share/doc/${LFS_PKG_DIR}
-
-# sshfs
-unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/sshfs*/)
-mkdir -pv /blfs/${LFS_PKG_DIR}/build
-(
-  cd /blfs/${LFS_PKG_DIR}/build
-  meson --prefix=/usr --buildtype=release ..
-)
-ninja -C /blfs/${LFS_PKG_DIR}/build
-ninja -C /blfs/${LFS_PKG_DIR}/build install
-
 # libass
 unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/libass*/)
 (
@@ -2313,6 +2256,11 @@ sed -i 's/python/&3/' /blfs/${LFS_PKG_DIR}/event_rpcgen.py
 make -C /blfs/${LFS_PKG_DIR}
 make -C /blfs/${LFS_PKG_DIR} install
 
+# Anime
+wget https://raw.githubusercontent.com/pystardust/ani-cli/master/ani-cli -P /blfs
+cp /blfs/ani-cli /usr/bin/anime
+chmod +x /usr/bin/anime
+
 # luajit
 mkdir /blfs/luajit
 git clone https://luajit.org/git/luajit.git /blfs/luajit
@@ -2327,20 +2275,6 @@ unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/lzo*/)
 )
 make -C /blfs/${LFS_PKG_DIR}
 make -C /blfs/${LFS_PKG_DIR} install
-
-# Openvpn
-mkdir /blfs/openvpn
-git clone https://github.com/OpenVPN/openvpn.git /blfs/openvpn
-(
-  cd /blfs/openvpn
-  autoreconf -ivf
-  ./configure --prefix=/usr --disable-lz4
-)
-make -C /blfs/openvpn
-make -C /blfs/openvpn install
-mkdir -pv /etc/openvpn
-cp /blfs/lfs/static/client.conf /etc/openvpn
-cp /blfs/lfs/static/credentials /etc/openvpn
 
 # MPV
 mkdir /blfs/mpv
@@ -2358,62 +2292,70 @@ git clone https://github.com/mpv-player/mpv.git /blfs/mpv
   --disable-libbluray               \
   --enable-sdl2                     \
   --lua=luajit                      \
-  --disable-x11                     \
-  --disable-egl-x11                 \
   --disable-gl-win32                \
-  --disable-vdpau                   \
-  --disable-vdpau-gl-x11            \
   --disable-d3d11                   \
   --disable-ios-gl                  \
   --disable-d3d-hwaccel             \
-  --disable-d3d9-hwaccel            \
+  --disable-d3d9-hwaccel
   ./waf
   ./waf install
 )
 
-# Youtube DL
-curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/bin/youtube-dl
-chmod a+rx /usr/bin/youtube-dl
-ln -sv python3.9 /usr/bin/python
+# yt-dlp
+curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/bin/yt-dlp
+chmod a+rx /usr/bin/yt-dlp
 
-# firefox-9
-unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/firefox-9*/)
-cat > /blfs/${LFS_PKG_DIR}/mozconfig << "EOF"
-ac_add_options --disable-necko-wifi
-ac_add_options --with-system-libevent
-ac_add_options --with-system-webp
-ac_add_options --with-system-nspr
-ac_add_options --with-system-nss
-ac_add_options --with-system-icu
-ac_add_options --enable-official-branding
-ac_add_options --disable-debug-symbols
-ac_add_options --disable-elf-hack
-ac_add_options --prefix=/usr
-ac_add_options --enable-application=browser
-ac_add_options --disable-crashreporter
-ac_add_options --disable-updater
-ac_add_options --disable-tests
-ac_add_options --enable-system-ffi
-ac_add_options --enable-system-pixman
-ac_add_options --with-system-jpeg
-ac_add_options --with-system-png
-ac_add_options --with-system-zlib
-ac_add_options --enable-default-toolkit=cairo-gtk3-wayland
-ac_add_options --enable-optimize=-O4
-unset MOZ_TELEMETRY_REPORTING
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
-EOF
-patch -d /blfs/${LFS_PKG_DIR} -Np1 -i /blfs/${LFS_PKG_DIR}esr-glibc234-1.patch
-patch -d /blfs/${LFS_PKG_DIR} -Np1 -i /blfs/${LFS_PKG_DIR}esr-disable_rust_test-1.patch
-mountpoint -q /dev/shm || mount -t tmpfs devshm /dev/shm
+# Fuse
+unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/fuse*/)
+sed -i '/^udev/,$ s/^/#/' /blfs/${LFS_PKG_DIR}/util/meson.build
+mkdir -pv /blfs/${LFS_PKG_DIR}/build
+(
+  cd /blfs/${LFS_PKG_DIR}/build
+  meson --prefix=/usr --buildtype=release ..
+)
+ninja -C /blfs/${LFS_PKG_DIR}/build
+ninja -C /blfs/${LFS_PKG_DIR}/build install
+chmod u+s /usr/bin/fusermount3
+install -v -m755 -d /usr/share/doc/${LFS_PKG_DIR}
+install -v -m644 /blfs/${LFS_PKG_DIR}/doc/{README.NFS,kernel.txt} /usr/share/doc/${LFS_PKG_DIR}
+cp -Rv /blfs/${LFS_PKG_DIR}/doc/html /usr/share/doc/${LFS_PKG_DIR}
+
+# sshfs
+unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/sshfs*/)
+mkdir -pv /blfs/${LFS_PKG_DIR}/build
+(
+  cd /blfs/${LFS_PKG_DIR}/build
+  meson --prefix=/usr --buildtype=release ..
+)
+ninja -C /blfs/${LFS_PKG_DIR}/build
+ninja -C /blfs/${LFS_PKG_DIR}/build install
+
+# Mutt
+unset LFS_PKG_DIR && export LFS_PKG_DIR=$(basename -- /blfs/mutt*/)
+groupadd -g 34 mail
+chgrp -v mail /var/mail
+sed -i -e 's/ -with_backspaces//' -e 's/elinks/links/' -e 's/-no-numbering -no-references//' /blfs/${LFS_PKG_DIR}/doc/Makefile.in
 (
   cd /blfs/${LFS_PKG_DIR}
-  export SHELL=/bin/sh
-  export CC=gcc CXX=g++
-  export MACH_USE_SYSTEM_PYTHON=1 
-  export MOZBUILD_STATE_PATH=${PWD}/mozbuild
-  ./mach configure
-  ./mach build
-  MACH_USE_SYSTEM_PYTHON=1 ./mach install
-  unset CC CXX MACH_USE_SYSTEM_PYTHON MOZBUILD_STATE_PATH SHELL
+  ./configure --prefix=/usr                   \
+  --sysconfdir=/etc                           \
+  --with-docdir=/usr/share/doc/${LFS_PKG_DIR} \
+  --with-ssl                                  \
+  --enable-external-dotlock                   \
+  --enable-imap                               \
+  --enable-hcache
 )
+make -C /blfs/${LFS_PKG_DIR}
+make -C /blfs/${LFS_PKG_DIR} install
+
+# Openvpn
+mkdir /blfs/openvpn
+git clone https://github.com/OpenVPN/openvpn.git /blfs/openvpn
+(
+  cd /blfs/openvpn
+  autoreconf -ivf
+  ./configure --prefix=/usr --disable-lz4
+)
+make -C /blfs/openvpn
+make -C /blfs/openvpn install
+mkdir -pv /etc/openvpn
