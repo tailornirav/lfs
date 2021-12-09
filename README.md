@@ -35,7 +35,7 @@ Basically the quest was to build the firefox from the source. So each and every 
 - Luajit
 - OpenVPN
 
-## How to use the scripts
+## How to use the scripts?
 Basically the start point is `install.sh`. There you have to mention the drive. Everything else the script will do automatically. Before hand you have to provide your kernel config in the static folder. That will be used to make your kernel.
 
 ### Changes for your system.
