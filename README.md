@@ -1,4 +1,4 @@
-# OSS
+# LFS
 These scripts are based on LFS and BLFS. There are changes in CFLAGS and some packages according to my need. These do not contain any tests.
 
 ## How are these scrips different than others?
