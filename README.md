@@ -47,4 +47,4 @@ CFLAGS are mentioned in every file so you have to change the flags in everyfile.
 ## How much time this will take?
 On my hardware i.e., AMD Ryzen 3400G with 16G RAM and a SSD it takes 5 hours to build the entire OS from scratch. The most time consuming ones are LLVM and Rust. Firefox with take about 50 minutes. Apart from that every other small packages will not take that much time. 3.5 hours for LLVM,Rust and Firefox. 1.5 for basic LFS and all other packages. A slight faster and a slight slower process can make huge diffrence in SBU.
 
-**I assume you know what you are doing if somehow you are here. Do not run these scripts if you don't know what you are doing.***
+**I assume you know what you are doing if somehow you are here. Do not run these scripts if you don't know what you are doing.**
